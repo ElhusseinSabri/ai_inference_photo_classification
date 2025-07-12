@@ -10,6 +10,7 @@ COPY . .
 # 4. Install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+RUN pip install requests
 
 # 5. Expose the API port
 EXPOSE 8000
