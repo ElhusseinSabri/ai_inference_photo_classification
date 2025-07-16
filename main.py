@@ -17,7 +17,8 @@ def prune_model(model, amount=0.3):
         if isinstance(module, nn.Conv2d):
             prune.l1_unstructured(module, name="weight", amount=amount)  # 30% of weights to 0
     return model
-# Load once globally
+
+
 model = torch.hub.load('pytorch/vision', 'resnet18', pretrained=True)
 model.eval()
 
@@ -61,6 +62,7 @@ async def predict_batch(files: List[UploadFile] = File(...)):
 @app.post("/predict_quantized_batch")
 async def predict_quantized_batch(files: List[UploadFile] = File(...)):
     images = []
+
     for file in files:
         image = Image.open(io.BytesIO(await file.read())).convert("RGB")
         tensor = transform(image).unsqueeze(0)
