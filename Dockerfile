@@ -1,19 +1,23 @@
-# 1. Use an official Python base image
-FROM python:3.10
+FROM python:3.10-slim
 
-# 2. Set working directory inside the container
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# 3. Copy local files into the container
+COPY requirements.txt .
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+
 COPY . .
 
-# 4. Install dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-RUN pip install requests
-
-# 5. Expose the API port
 EXPOSE 8000
 
-# 6. Run the API using uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
